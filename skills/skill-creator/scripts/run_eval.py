@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """Run trigger evaluation for a skill description.
 
-Tests whether a skill's description causes Claude to trigger (read the skill)
+Tests whether a skill's description causes an agent to trigger (read the skill)
 for a set of queries. Outputs results as JSON.
+
+NOTE: This script requires the `claude` CLI (Claude Code). It runs `claude -p`
+with JSON stream output to detect skill triggering. For other agent environments,
+see references/description-optimization.md for a manual approach, or the Agent
+Skills spec's guide on optimizing descriptions.
 """
 
 import argparse

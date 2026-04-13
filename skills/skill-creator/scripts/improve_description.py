@@ -4,6 +4,9 @@
 Takes eval results (from run_eval.py) and generates an improved description
 by calling `claude -p` as a subprocess (same auth pattern as run_eval.py —
 uses the session's Claude Code auth, no separate ANTHROPIC_API_KEY needed).
+
+NOTE: This script requires the `claude` CLI (Claude Code). For other agent
+environments, see references/description-optimization.md for alternatives.
 """
 
 import argparse

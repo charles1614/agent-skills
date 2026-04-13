@@ -4,6 +4,10 @@
 Combines run_eval.py and improve_description.py in a loop, tracking history
 and returning the best description found. Supports train/test split to prevent
 overfitting.
+
+NOTE: This script requires the `claude` CLI (Claude Code), since both
+run_eval.py and improve_description.py depend on it. For other agent
+environments, see references/description-optimization.md for alternatives.
 """
 
 import argparse

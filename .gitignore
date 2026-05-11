@@ -3,3 +3,4 @@ __pycache__/
 .idea/
 .vscode/
 
+skills/paper-reader/scripts/baseline_manifests.json

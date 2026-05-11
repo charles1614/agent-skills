@@ -1,0 +1,555 @@
+% -*- coding: utf-8 -*-
+% Paper Analysis Report — XeLaTeX Template
+% Compile with: xelatex -interaction=nonstopmode <filename>.tex (run twice for TOC)
+\documentclass[11pt, a4paper]{article}
+
+% ============================================================
+% Engine Detection & CJK Setup
+% ============================================================
+\usepackage{xeCJK}
+\usepackage{fontspec}
+
+% Chinese fonts
+\setCJKmainfont[BoldFont={Noto Sans CJK SC Medium}]{Noto Serif CJK SC}
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans Mono CJK SC}
+
+% Latin fonts (referenced by filename for TeX tree discovery)
+\setmainfont{texgyretermes}[
+  Extension = .otf,
+  UprightFont = *-regular,
+  BoldFont = *-bold,
+  ItalicFont = *-italic,
+  BoldItalicFont = *-bolditalic
+]
+\setsansfont{texgyreheros}[
+  Extension = .otf,
+  UprightFont = *-regular,
+  BoldFont = *-bold,
+  ItalicFont = *-italic,
+  BoldItalicFont = *-bolditalic
+]
+\setmonofont{texgyrecursor}[
+  Extension = .otf,
+  UprightFont = *-regular,
+  BoldFont = *-bold,
+  ItalicFont = *-italic,
+  BoldItalicFont = *-bolditalic
+]
+
+% CJK spacing tuning
+\xeCJKsetup{CJKmath=true, PlainEquation=true}
+
+% Icon font fallback for geometric Unicode glyphs (▼ ◈ ✦ ▸ etc.)
+% that the Latin sans font lacks. Noto Sans Symbols2 covers geometric shapes;
+% DejaVu Sans is a broadly-available fallback.
+\IfFontExistsTF{Noto Sans Symbols2}{%
+  \newfontfamily{\iconfont}{Noto Sans Symbols2}%
+}{%
+  \IfFontExistsTF{DejaVu Sans}{%
+    \newfontfamily{\iconfont}{DejaVu Sans}%
+  }{%
+    \newfontfamily{\iconfont}{Noto Sans CJK SC}%
+  }%
+}
+\newcommand{\bxi}[1]{{\iconfont #1}}
+
+% ============================================================
+% Page Layout
+% ============================================================
+\usepackage[
+  a4paper,
+  top=2.4cm, bottom=2.4cm,
+  left=2.5cm, right=2.5cm,
+  headheight=28pt,
+  headsep=14pt,
+  footskip=32pt
+]{geometry}
+
+\usepackage{setspace}
+\setstretch{1.22}
+
+\usepackage{lastpage}
+
+% ============================================================
+% Color Palette
+% ============================================================
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+
+\definecolor{PrimaryBlue}{HTML}{1A5276}
+\definecolor{AccentTeal}{HTML}{148F77}
+\definecolor{LightBg}{HTML}{F4F6F7}
+\definecolor{DarkText}{HTML}{2C3E50}
+\definecolor{SubtleGray}{HTML}{7F8C8D}
+\definecolor{WarmOrange}{HTML}{E67E22}
+\definecolor{CriticalRed}{HTML}{C0392B}
+\definecolor{StrengthGreen}{HTML}{27AE60}
+\definecolor{MathBlueBg}{HTML}{EBF5FB}
+\definecolor{KeyBg}{HTML}{E8F8F5}
+\definecolor{QuoteBg}{HTML}{FDF6E3}
+\definecolor{MethodBg}{HTML}{EEF3F9}
+\definecolor{MethodFrame}{HTML}{2E86C1}
+
+% ============================================================
+% TikZ (loaded via tcolorbox) — used for badges
+% ============================================================
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+% ============================================================
+% Section Styling (colored number badge)
+% ============================================================
+\usepackage{titlesec}
+
+\newcommand{\sectionbadge}[1]{%
+  \tikz[baseline=(b.base)]{%
+    \node[fill=PrimaryBlue, text=white, rounded corners=3pt,
+          font=\bfseries\sffamily,
+          inner xsep=6pt, inner ysep=2.5pt] (b) {#1};%
+  }%
+}
+
+\titleformat{\section}
+  {\Large\bfseries\sffamily\color{PrimaryBlue}}
+  {\sectionbadge{\thesection}}{0.7em}{}
+  [\vspace{-0.2ex}{\color{AccentTeal!60}\rule{\textwidth}{0.5pt}}]
+
+\titleformat{\subsection}
+  {\large\bfseries\sffamily\color{PrimaryBlue!85!black}}
+  {\thesubsection}{0.6em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\sffamily\color{PrimaryBlue!65!black}}
+  {\thesubsubsection}{0.5em}{}
+
+\titlespacing*{\section}{0pt}{2.8ex plus 1ex minus .2ex}{1.6ex plus .2ex}
+\titlespacing*{\subsection}{0pt}{1.9ex plus 0.8ex minus .2ex}{0.8ex plus .2ex}
+\titlespacing*{\subsubsection}{0pt}{1.2ex plus 0.5ex minus .1ex}{0.5ex plus .1ex}
+
+% Robust \paragraph: keeps runin behavior but enforces explicit positive
+% post-spacing via titlesec, so the glue doesn't collapse when followed
+% directly by an environment (\begin{keyinsight}, \begin{infobox}, etc.).
+% Default LaTeX \paragraph uses negative space-after to signal "absorb into
+% inline body text" — collapses to nothing when no body follows.
+\titleformat{\paragraph}[runin]
+  {\normalfont\normalsize\bfseries}
+  {}{0pt}{}
+\titlespacing*{\paragraph}{0pt}%
+  {1.4ex plus 0.4ex minus 0.1ex}%
+  {0.6em plus 0.1em}
+
+% ============================================================
+% Header & Footer
+% ============================================================
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily\color{SubtleGray}\shorttitle}
+\fancyhead[R]{\small\sffamily\color{SubtleGray}论文深度分析}
+\fancyfoot[C]{\small\sffamily\color{SubtleGray}
+  \textbf{\thepage} \,/\, \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{AccentTeal!55}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\small\sffamily\color{SubtleGray}
+    \textbf{\thepage} \,/\, \pageref{LastPage}}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+% ============================================================
+% Highlight Boxes (tcolorbox)
+% ============================================================
+
+% Key insight / TL;DR box (full-width title bar — unified with other primary callouts)
+\newtcolorbox{keyinsight}[1][核心要点]{
+  enhanced,
+  colback=KeyBg,
+  colframe=AccentTeal,
+  boxrule=0.5pt,
+  left=10pt, right=10pt, top=7pt, bottom=7pt,
+  arc=4pt,
+  coltitle=white,
+  colbacktitle=AccentTeal,
+  fonttitle=\bfseries\sffamily\small,
+  title={\,\bxi{◆}\,\,#1},
+  drop shadow=AccentTeal!15,
+  breakable,
+  before skip=12pt, after skip=12pt
+}
+
+% Strength box
+\newtcolorbox{strengthbox}[1][优势分析]{
+  enhanced,
+  colback=StrengthGreen!5,
+  colframe=StrengthGreen!60!black,
+  boxrule=0.4pt,
+  left=10pt, right=10pt, top=7pt, bottom=7pt,
+  arc=4pt,
+  coltitle=white,
+  fonttitle=\bfseries\sffamily\small,
+  title={\,\bxi{▲}\,\,#1},
+  drop shadow=StrengthGreen!15,
+  breakable,
+  before skip=12pt, after skip=12pt
+}
+
+% Weakness / critical box
+\newtcolorbox{weaknessbox}[1][不足与局限]{
+  enhanced,
+  colback=CriticalRed!4,
+  colframe=CriticalRed!50!black,
+  boxrule=0.4pt,
+  left=10pt, right=10pt, top=7pt, bottom=7pt,
+  arc=4pt,
+  coltitle=white,
+  fonttitle=\bfseries\sffamily\small,
+  title={\,\bxi{▼}\,\,#1},
+  drop shadow=CriticalRed!15,
+  breakable,
+  before skip=12pt, after skip=12pt
+}
+
+% Math / formula highlight box
+\newtcolorbox{mathbox}[1][]{
+  enhanced,
+  colback=MathBlueBg,
+  colframe=PrimaryBlue!45,
+  boxrule=0.4pt,
+  left=12pt, right=12pt, top=9pt, bottom=9pt,
+  arc=4pt,
+  breakable,
+  title={\,$\Sigma$\,\,#1},
+  fonttitle=\bfseries\sffamily\small\color{PrimaryBlue},
+  drop shadow=PrimaryBlue!10,
+  before skip=10pt, after skip=10pt,
+}
+
+% Info box (for metadata, reading suggestions, etc.)
+% Slightly less horizontal padding (8pt vs 10pt on other boxes) so legacy
+% fixed-cm tables like p{3.2cm}p{13cm} (=16.2cm) fit within the box's
+% interior (~15.5cm at 8pt padding).
+\newtcolorbox{infobox}[1][]{
+  enhanced,
+  colback=LightBg,
+  colframe=SubtleGray!55,
+  boxrule=0.3pt,
+  left=8pt, right=8pt, top=7pt, bottom=7pt,
+  arc=3pt,
+  breakable,
+  title={\,\bxi{▸}\,\,#1},
+  fonttitle=\bfseries\sffamily\small\color{DarkText},
+  before skip=10pt, after skip=10pt,
+}
+
+% Method / architecture box
+\newtcolorbox{methodbox}[1][方法概述]{
+  enhanced,
+  colback=MethodBg,
+  colframe=MethodFrame,
+  boxrule=0.5pt,
+  left=10pt, right=10pt, top=7pt, bottom=7pt,
+  arc=4pt,
+  coltitle=white,
+  colbacktitle=MethodFrame,
+  fonttitle=\bfseries\sffamily\small,
+  title={\,\bxi{◈}\,\,#1},
+  drop shadow=MethodFrame!15,
+  breakable,
+  before skip=12pt, after skip=12pt
+}
+
+% Takeaway / conclusion box (distinct from keyinsight; use at section ends)
+\newtcolorbox{takeaway}[1][要点小结]{
+  enhanced,
+  colback=WarmOrange!6,
+  colframe=WarmOrange!70!black,
+  boxrule=0.5pt,
+  left=10pt, right=10pt, top=7pt, bottom=7pt,
+  arc=4pt,
+  coltitle=white,
+  colbacktitle=WarmOrange!80!black,
+  fonttitle=\bfseries\sffamily\small,
+  title={\,\bxi{✦}\,\,#1},
+  breakable,
+  before skip=12pt, after skip=12pt
+}
+
+% Auto-sized 2-column key/value table for use inside \begin{infobox}.
+% First column 2.8cm for labels, second X-fills the remaining interior
+% width. Use this instead of fixed-cm \begin{tabular}{p{Ncm}p{Mcm}} when
+% N+M would exceed ~15cm or when the second column may contain long
+% content. Sizing automatically adapts to the box's \linewidth.
+% Uses \NewEnviron because tabularx body-scanning breaks under plain
+% \newenvironment.
+\usepackage{environ}
+\NewEnviron{infotable}{%
+  \begin{tabularx}{\linewidth}{@{}p{2.8cm}X@{}}\BODY\end{tabularx}%
+}
+
+% Quote / citation callout
+\newtcolorbox{quotebox}[1][]{
+  enhanced,
+  colback=QuoteBg,
+  colframe=WarmOrange!40,
+  boxrule=0pt,
+  leftrule=3pt,
+  left=12pt, right=10pt, top=7pt, bottom=7pt,
+  arc=0pt,
+  fontupper=\itshape,
+  title={#1},
+  coltitle=SubtleGray,
+  fonttitle=\bfseries\sffamily\small,
+  breakable,
+  before skip=10pt, after skip=10pt
+}
+
+% ============================================================
+% Math, Algorithms, Tables
+% ============================================================
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{array}
+\renewcommand{\arraystretch}{1.2}
+
+% Relax line-breaking inside tables only — prevents long unbreakable tokens
+% in cells (URLs, namespaced identifiers) from forcing CJK-justified text
+% in the same cell to stretch. \sloppy in body paragraphs is undesirable
+% but inside table cells the breakage tradeoff is favorable.
+\usepackage{etoolbox}
+\AtBeginEnvironment{tabular}{\sloppy}
+\AtBeginEnvironment{tabularx}{\sloppy}
+\AtBeginEnvironment{longtable}{\sloppy}
+
+% ============================================================
+% Code Listings
+% ============================================================
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily\color{DarkText},
+  backgroundcolor=\color{LightBg},
+  frame=single,
+  rulecolor=\color{SubtleGray!40},
+  breaklines=true,
+  numbers=left,
+  numberstyle=\tiny\color{SubtleGray},
+  keywordstyle=\color{PrimaryBlue}\bfseries,
+  commentstyle=\color{StrengthGreen!70!black}\itshape,
+  stringstyle=\color{WarmOrange},
+  tabsize=4,
+  xleftmargin=1em,
+  framexleftmargin=0.5em
+}
+
+% ============================================================
+% Hyperlinks & PDF Metadata
+% ============================================================
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=PrimaryBlue,
+  citecolor=AccentTeal,
+  urlcolor=AccentTeal!80!black,
+  pdftitle={%PAPER_TITLE%},
+  pdfauthor={AI Research Analysis},
+  bookmarksnumbered=true,
+  bookmarksopen=true
+}
+
+% URL/path breaking — applies to \url{} and \path{} (loaded by hyperref via
+% the url package). Default \UrlBreaks doesn't include hyphen, so paths
+% like deepseek-ai/DeepSeek-V4-Flash can't break and force CJK-justified
+% lines to stretch. Adding hyphen + a few more chars here makes long
+% monospace identifiers break naturally.
+\Urlmuskip=0mu plus 1mu\relax
+\def\UrlBreaks{\do\.\do\@\do\\\do\/\do\!\do\_\do\?\do\;\do\>\do\]\do\)\do\,\do\'\do\-\do\=\do\+\do\#\do\&}
+\urlstyle{tt}
+
+% ============================================================
+% Lists
+% ============================================================
+\usepackage{enumitem}
+\setlist{nosep, leftmargin=1.6em, itemsep=2pt, parsep=1pt}
+\setlist[itemize,1]{label=\color{AccentTeal}\small$\blacktriangleright$}
+\setlist[itemize,2]{label=\color{PrimaryBlue!60}\textendash}
+\setlist[enumerate,1]{label=\color{PrimaryBlue}\bfseries\arabic*.}
+
+% ============================================================
+% Graphics
+% ============================================================
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+
+% Caption styling
+\usepackage[font=small,labelfont={bf,color=PrimaryBlue},
+            textfont={color=DarkText},labelsep=period]{caption}
+
+% ============================================================
+% Table of Contents Styling
+% ============================================================
+\usepackage{titletoc}
+\renewcommand{\contentsname}{\color{PrimaryBlue}\sffamily 目\quad 录}
+
+\titlecontents{section}[0em]
+  {\addvspace{2pt}\sffamily\bfseries\color{PrimaryBlue}}
+  {\contentslabel{1.6em}}
+  {\hspace*{-1.6em}}
+  {\titlerule*[0.6pc]{\color{SubtleGray!50}.}\contentspage}
+
+\titlecontents{subsection}[2.0em]
+  {\small\sffamily\color{DarkText}}
+  {\contentslabel{2.2em}}
+  {\hspace*{-2.2em}}
+  {\titlerule*[0.6pc]{\color{SubtleGray!40}.}\contentspage}
+
+\titlecontents{subsubsection}[4.2em]
+  {\small\sffamily\color{DarkText!70}}
+  {\contentslabel{2.6em}}
+  {\hspace*{-2.6em}}
+  {\titlerule*[0.6pc]{\color{SubtleGray!30}.}\contentspage}
+
+% ============================================================
+% Custom Commands
+% ============================================================
+% Title block commands
+\newcommand{\shorttitle}{}
+
+\newcommand{\papertitle}[1]{%
+  \renewcommand{\shorttitle}{#1}%
+  \begin{center}
+    {\color{AccentTeal}\rule{0.35\textwidth}{1.6pt}}\\[0.7em]
+    {\footnotesize\sffamily\bfseries\color{AccentTeal}%
+     \hspace{0.15em}P\hspace{0.15em}A\hspace{0.15em}P\hspace{0.15em}E\hspace{0.15em}R\hspace{1.5em}%
+     A\hspace{0.15em}N\hspace{0.15em}A\hspace{0.15em}L\hspace{0.15em}Y\hspace{0.15em}S\hspace{0.15em}I\hspace{0.15em}S}\\[0.25em]
+    {\small\sffamily\color{SubtleGray}论文深度分析}\\[0.9em]
+    {\LARGE\bfseries\sffamily\color{PrimaryBlue} #1}\\[0.5em]
+    {\color{AccentTeal!60}\rule{0.18\textwidth}{0.5pt}}
+  \end{center}%
+}
+
+\newcommand{\paperauthors}[1]{%
+  \begin{center}{\normalsize\color{DarkText} #1}\end{center}
+}
+\newcommand{\papervenue}[1]{%
+  \begin{center}{\small\color{SubtleGray}\itshape #1}\end{center}
+}
+\newcommand{\paperdate}[1]{%
+  \begin{center}{\small\sffamily\color{SubtleGray} 分析日期：#1}\end{center}
+}
+
+% Colored marks for strengths/weaknesses
+\newcommand{\gmark}[1]{\textcolor{StrengthGreen!80!black}{\bfseries #1}}
+\newcommand{\rmark}[1]{\textcolor{CriticalRed!80!black}{\bfseries #1}}
+\newcommand{\omark}[1]{\textcolor{WarmOrange!80!black}{\bfseries #1}}
+
+% Rating stars
+\newcommand{\ratingfull}{\textcolor{WarmOrange}{$\bigstar$}}
+\newcommand{\ratinghalf}{\textcolor{WarmOrange!40}{$\bigstar$}}
+\newcommand{\ratingempty}{\textcolor{SubtleGray!30}{$\bigstar$}}
+
+% Inline pill/tag for keywords, categories, tags
+% Usage: \ptag{Systems} \ptag[PrimaryBlue]{Algorithm}
+\newcommand{\ptag}[2][AccentTeal]{%
+  \tikz[baseline=(t.base)]{%
+    \node[fill=#1!12, draw=#1!60, rounded corners=2pt,
+          inner xsep=4pt, inner ysep=1pt,
+          font=\footnotesize\sffamily,
+          text=#1!60!black] (t) {#2};%
+  }%
+}
+
+% Key metric badge
+% Usage: \metric{92.3\%}{accuracy}
+\newcommand{\metric}[2]{%
+  \tikz[baseline=(m.base)]{%
+    \node[fill=PrimaryBlue, rounded corners=3pt,
+          inner xsep=6pt, inner ysep=2pt,
+          font=\footnotesize\bfseries\sffamily,
+          text=white] (m) {#1\hspace{0.4em}\textcolor{white!80}{\scriptsize #2}};%
+  }%
+}
+
+% ============================================================
+% Document Begin
+% ============================================================
+\begin{document}
+
+% --- Title Block ---
+% Replace placeholders with actual paper info
+\vspace*{0.2cm}
+\papertitle{%PAPER_TITLE%}
+\paperauthors{%PAPER_AUTHORS%}
+\papervenue{%PAPER_VENUE% \quad | \quad %PAPER_YEAR%}
+\paperdate{\today}
+
+\vspace{1.0em}
+
+% --- One-line summary ---
+\begin{keyinsight}[一句话总结]
+%ONE_LINE_SUMMARY%
+\end{keyinsight}
+
+\vspace{0.5em}
+
+% --- Table of Contents ---
+{
+  \hypersetup{linkcolor=DarkText}
+  \tableofcontents
+}
+
+\newpage
+
+% ============================================================
+% CONTENT SECTIONS — Fill below with generated analysis
+% ============================================================
+
+% Section 1: 论文元信息与分类
+% \section{论文元信息与分类}
+% \begin{infobox}[论文信息]
+% \begin{tabular}{@{}ll@{}}
+% \textbf{标题} & Paper Title \\
+% \textbf{作者} & Authors \\
+% \textbf{机构} & Affiliations \\
+% \textbf{发表} & Venue, Year \\
+% \textbf{类型} & Systems / ML Algorithm / Theory / Survey / Benchmark / LLM Technical Report \\
+% \end{tabular}
+% \end{infobox}
+
+% Section 2: 核心摘要与定性评估
+% \section{核心摘要与定性评估}
+
+% Section 3: 创新贡献与研究定位
+% \section{创新贡献与研究定位}
+
+% Section 4: 研究背景与问题形式化
+% \section{研究背景与问题形式化}
+
+% Section 5: 技术方法与系统架构
+% \section{技术方法与系统架构}
+
+% Section 6: 实验设计与评估分析
+% \section{实验设计与评估分析}
+
+% Section 7: 批判性分析
+% \section{批判性分析}
+
+% Section 8: 数学与算法深入分析
+% \section{数学与算法深入分析}
+
+% Section 9: 结论与未来展望
+% \section{结论与未来展望}
+
+% Section 10: 延伸阅读建议
+% \section{延伸阅读建议}
+
+\end{document}

@@ -25,6 +25,7 @@ npx skills add charles1614/agent-skills --list
 | Skill | Description |
 | ----- | ----------- |
 | [skill-creator](./skills/skill-creator) | Create new skills, modify and improve existing skills, and measure skill performance |
+| [paper-reader](./skills/paper-reader) | Read AI/CS academic papers (local PDF or arxiv) and generate detailed Chinese analysis reports in Markdown and LaTeX |
 
 More skills coming soon.
 

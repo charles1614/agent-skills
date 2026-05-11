@@ -22,10 +22,13 @@ npx skills add charles1614/agent-skills --list
 
 ## Available Skills
 
+<!-- Auto-generated from skills/*/SKILL.md frontmatter — run `python scripts/update_index.py` to regenerate. -->
+<!-- SKILLS-TABLE:START -->
 | Skill | Description |
 | ----- | ----------- |
-| [skill-creator](./skills/skill-creator) | Create new skills, modify and improve existing skills, and measure skill performance |
-| [paper-reader](./skills/paper-reader) | Read AI/CS academic papers (local PDF or arxiv) and generate detailed Chinese analysis reports in Markdown and LaTeX |
+| [paper-reader](./skills/paper-reader) | Read AI/CS academic papers and generate detailed Chinese analysis reports in both Markdown and LaTeX formats. |
+| [skill-creator](./skills/skill-creator) | Create new skills, modify and improve existing skills, and measure skill performance. |
+<!-- SKILLS-TABLE:END -->
 
 More skills coming soon.
 

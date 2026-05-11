@@ -28,6 +28,16 @@ description: What this skill does and when to use it
 
 Skills use progressive disclosure: metadata is always in context, SKILL.md body loads on trigger, bundled resources (`scripts/`, `references/`, `assets/`) load as needed.
 
+## Adding or Renaming Skills
+
+The README skills table and `.claude-plugin/marketplace.json` plugin list are generated from each skill's `SKILL.md` frontmatter. After adding, removing, or renaming a skill, run:
+
+```bash
+python scripts/update_index.py
+```
+
+`skills/*/SKILL.md` frontmatter (`name`, `description`) is the source of truth for what skills exist — don't edit the generated table or marketplace plugin list by hand.
+
 ## Key Skill: skill-creator
 
 The main skill in this repo (`skills/skill-creator/`) is a meta-skill for creating and improving other skills. It includes:
